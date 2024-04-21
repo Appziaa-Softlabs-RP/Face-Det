@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\FaceDetectRequest;
-use App\Http\Requests\FaceRegisterRequest;
-use App\Http\Requests\FaceUpdateRequest;
+use App\Http\Requests\EmployeeDetectRequest;
+use App\Http\Requests\EmployeeRegisterRequest;
+use App\Http\Requests\EmployeeUpdateRequest;
 use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
 
-class FaceController extends Controller
+class EmployeeController extends Controller
 {
     protected $client;
 
@@ -22,7 +22,7 @@ class FaceController extends Controller
         ]);
     }
 
-    public function register(FaceRegisterRequest $request): JsonResponse
+    public function register(EmployeeRegisterRequest $request): JsonResponse
     {
         try {
             // Store the image
@@ -30,6 +30,7 @@ class FaceController extends Controller
 
             //Saving Employee
             $employee = Employee::create([
+                'user_id' => auth()->guard('api')->id(),
                 'name' => $request->name,
                 'email' => $request->email,
                 'source_emp_id' => $request->empId,
@@ -45,12 +46,12 @@ class FaceController extends Controller
         ]);
     }
 
-    public function update(FaceUpdateRequest $request): JsonResponse
+    public function update(EmployeeUpdateRequest $request): JsonResponse
     {
         try {
 
             //Get Employee
-            $employee = Employee::where('email', $request->email)->first();
+            $employee = Employee::where('user_id', auth()->guard('api')->id())->where('email', $request->email)->first();
 
             // Delete the file
             if (Storage::disk('local')->exists($employee->image)) {
@@ -74,11 +75,11 @@ class FaceController extends Controller
         ]);
     }
 
-    public function compare(FaceDetectRequest $request): JsonResponse
+    public function compare(EmployeeDetectRequest $request): JsonResponse
     {
         try {
             //Get Employee
-            $employee = Employee::where('email', $request->email)->first();
+            $employee = Employee::where('user_id', auth()->guard('api')->id())->where('email', $request->email)->first();
             
             $image = fopen($request->file('image')->getPathName(), 'r');
             $sourceBytes = fread($image, $request->file('image')->getSize());
@@ -114,7 +115,5 @@ class FaceController extends Controller
         } catch (\Throwable $th) {
             throw $th;
         }
-
-        
     }
 }

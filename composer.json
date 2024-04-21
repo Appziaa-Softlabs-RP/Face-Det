@@ -9,6 +9,7 @@
         "aws/aws-sdk-php": "^3.304",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.10",
+        "laravel/passport": "^12.1",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8"
     },

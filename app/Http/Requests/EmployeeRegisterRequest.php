@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class FaceRegisterRequest extends FormRequest
+class EmployeeRegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,10 +22,16 @@ class FaceRegisterRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = auth()->guard('api')->id();
         return [
             "name" => "required|string|max:255",
-            "email" => "required|string|max:255|unique:employees",
-            "empId" => "required|string|max:255|unique:employees,source_emp_id",
+            "email" => [
+                "required", "string", "max:255",
+                Rule::unique('employees')->where(function ($query) use ($id) {
+                    return $query->where('user_id', $id);
+                }),
+            ],
+            "empId" => "required|string|max:255",
             'image' => 'required|image|mimes:jpeg,jpg|max:2048',
         ];
     }

@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FaceController;
+use App\Http\Controllers\EmployeeController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -18,6 +19,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [FaceController::class, 'register']);
-Route::post('/update', [FaceController::class, 'update']);
-Route::post('/detect', [FaceController::class, 'compare']);
+Route::group(['prefix' => 'company'], function () {
+    Route::get('/', [CompanyController::class, 'index'])->middleware('auth:api');
+    Route::post('/login', [CompanyController::class, 'login']);
+    Route::post('/register', [CompanyController::class, 'register']);
+
+    Route::group(['prefix' => 'employee', 'middleware' => ['auth:api']], function () {
+        Route::post('/register', [EmployeeController::class, 'register']);
+        Route::post('/update', [EmployeeController::class, 'update']);
+        Route::post('/detect', [EmployeeController::class, 'compare']);
+    });
+});
