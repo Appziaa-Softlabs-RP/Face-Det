@@ -30,3 +30,7 @@ Route::group(['prefix' => 'company'], function () {
         Route::post('/detect', [EmployeeController::class, 'compare']);
     });
 });
+
+Route::fallback(function (Request $request) {
+    return response()->json(['message' => 'Not found.'], 404);
+});

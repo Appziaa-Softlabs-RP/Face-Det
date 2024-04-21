@@ -20,3 +20,7 @@ Route::get('/', function () {
 Route::get('/info', function () {
     return phpinfo();
 });
+
+Route::fallback(function (Request $request) {
+    return response()->json(['message' => 'Not found.'], 404);
+});
