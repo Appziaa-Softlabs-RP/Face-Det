@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class FaceRegisterRequest extends FormRequest
+class FaceDetectRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,7 @@ class FaceRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "name" => "required|string|max:255",
-            "email" => "required|string|max:255|unique:employees",
-            "empId" => "required|string|max:255|unique:employees,source_emp_id",
+            "email" => "required|string|max:255|exists:employees",
             'image' => 'required|image|mimes:jpeg,jpg|max:2048',
         ];
     }

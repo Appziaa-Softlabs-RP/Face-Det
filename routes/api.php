@@ -19,3 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/register', [FaceController::class, 'register']);
+Route::post('/update', [FaceController::class, 'update']);
+Route::post('/detect', [FaceController::class, 'compare']);
