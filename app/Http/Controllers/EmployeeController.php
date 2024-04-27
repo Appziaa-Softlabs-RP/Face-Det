@@ -51,8 +51,8 @@ class EmployeeController extends Controller
         try {
 
             //Get Employee
-            $employee = Employee::where('user_id', auth()->guard('api')->id())->where('email', $request->email)->first();
-
+            $employee = Employee::where('user_id', auth()->guard('api')->id())->where('source_emp_id', $request->empId)->first();
+            
             // Delete the file
             if (Storage::disk('local')->exists($employee->image)) {
                 Storage::disk('local')->delete($employee->image);
@@ -79,7 +79,7 @@ class EmployeeController extends Controller
     {
         try {
             //Get Employee
-            $employee = Employee::where('user_id', auth()->guard('api')->id())->where('email', $request->email)->first();
+            $employee = Employee::where('user_id', auth()->guard('api')->id())->where('source_emp_id', $request->empId)->first();
             
             $image = fopen($request->file('image')->getPathName(), 'r');
             $sourceBytes = fread($image, $request->file('image')->getSize());

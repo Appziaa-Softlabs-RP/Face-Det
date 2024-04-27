@@ -25,13 +25,13 @@ class EmployeeRegisterRequest extends FormRequest
         $id = auth()->guard('api')->id();
         return [
             "name" => "required|string|max:255",
-            "email" => [
+            "email" => ["string", "max:255"],
+            "empId" => [
                 "required", "string", "max:255",
-                Rule::unique('employees')->where(function ($query) use ($id) {
+                Rule::unique('employees', 'source_emp_id')->where(function ($query) use ($id) {
                     return $query->where('user_id', $id);
                 }),
             ],
-            "empId" => "required|string|max:255",
             'image' => 'required|image|mimes:jpeg,jpg|max:2048',
         ];
     }

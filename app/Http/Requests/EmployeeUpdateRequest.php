@@ -26,9 +26,15 @@ class EmployeeUpdateRequest extends FormRequest
         return [
             "name" => "required|string|max:255",
             'email' => [
-                'required',
                 'email',
-                Rule::exists('employees')->where(function ($query) use ($id) {
+                Rule::unique('employees')->where(function ($query) use ($id) {
+                    return $query->where('user_id', $id);
+                })->ignore($this->empId, 'source_emp_id'),
+            ],
+            'empId' => [
+                'required',
+                'string',
+                Rule::exists('employees', 'source_emp_id')->where(function ($query) use ($id) {
                     return $query->where('user_id', $id);
                 }),
             ],

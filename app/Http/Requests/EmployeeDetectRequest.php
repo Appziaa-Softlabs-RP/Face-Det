@@ -21,8 +21,15 @@ class EmployeeDetectRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = auth()->guard('api')->id();
         return [
-            "email" => "required|string|max:255|exists:employees",
+            'empId' => [
+                'required',
+                'string',
+                Rule::exists('employees', 'source_emp_id')->where(function ($query) use ($id) {
+                    return $query->where('user_id', $id);
+                }),
+            ],
             'image' => 'required|image|mimes:jpeg,jpg|max:2048',
         ];
     }

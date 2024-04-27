@@ -15,6 +15,16 @@ class Employee extends Model
     ];
 
     protected $hidden = [
+        'user_id',
         'id'
     ];
+
+    protected $appends = [
+        'company_id'
+    ];
+
+    public function getCompanyIdAttribute()
+    {
+        return $this->attributes['user_id'];
+    }
 }
