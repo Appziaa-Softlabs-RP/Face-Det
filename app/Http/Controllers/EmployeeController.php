@@ -105,11 +105,11 @@ class EmployeeController extends Controller
                 return response()->json([
                     'message' => 'Match successful',
                     'similarity' => $similarity
-                ]);
+                ], 200);
             } else {
                 return response()->json([
                     'message' => 'No Match found'
-                ]);
+                ],404);
             }
 
         } catch (\Throwable $th) {
