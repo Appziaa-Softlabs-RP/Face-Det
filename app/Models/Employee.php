@@ -27,4 +27,9 @@ class Employee extends Model
     {
         return $this->attributes['user_id'];
     }
+
+    public function getImageAttribute()
+    {
+        return env('AWS_S3_URL').$this->attributes['image'];
+    }
 }

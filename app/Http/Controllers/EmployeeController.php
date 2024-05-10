@@ -26,7 +26,7 @@ class EmployeeController extends Controller
     {
         try {
             // Store the image
-            $imagePath = $request->file('image')->store('images', 'local');
+            $imagePath = $request->file('image')->store('images', 's3');
 
             //Saving Employee
             $employee = Employee::create([
@@ -59,7 +59,7 @@ class EmployeeController extends Controller
             }
 
             // Store the image
-            $imagePath = $request->file('image')->store('images', 'local');
+            $imagePath = $request->file('image')->store('images', 's3');
 
             //Update Employee
             $employee->image = $imagePath;
