@@ -9,6 +9,7 @@ use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
+use DB;
 
 class EmployeeController extends Controller
 {
@@ -52,10 +53,10 @@ class EmployeeController extends Controller
 
             //Get Employee
             $employee = Employee::where('user_id', auth()->guard('api')->id())->where('source_emp_id', $request->empId)->first();
-            
+
             // Delete the file
-            if (Storage::disk('local')->exists($employee->image)) {
-                Storage::disk('local')->delete($employee->image);
+            if (Storage::disk('s3')->exists($employee->image)) {
+                Storage::disk('s3')->delete($employee->image);
             }
 
             // Store the image
@@ -80,11 +81,10 @@ class EmployeeController extends Controller
         try {
             //Get Employee
             $employee = Employee::where('user_id', auth()->guard('api')->id())->where('source_emp_id', $request->empId)->first();
-            
             $image = fopen($request->file('image')->getPathName(), 'r');
             $sourceBytes = fread($image, $request->file('image')->getSize());
-            
-            $targetBytes = Storage::disk('local')->get($employee->image);
+            $empArr = DB::table('employees')->where('user_id', auth()->guard('api')->id())->where('source_emp_id', $request->empId)->first();
+            $targetBytes = Storage::disk('s3')->get($empArr->image);
             // Prepare parameters for compareFaces function
             $params = [
                 'SourceImage' => [
@@ -95,7 +95,6 @@ class EmployeeController extends Controller
                 ],
                 'SimilarityThreshold' => 99, // Adjust similarity threshold as needed
             ];
-
             // Call compareFaces function
             $result = $this->client->compareFaces($params);
 
