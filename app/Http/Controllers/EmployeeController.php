@@ -9,6 +9,7 @@ use App\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Storage;
 use Aws\Rekognition\RekognitionClient;
+use Aws\Exception\AwsException;
 use DB;
 
 class EmployeeController extends Controller
@@ -111,8 +112,9 @@ class EmployeeController extends Controller
                 ],404);
             }
 
-        } catch (\Throwable $th) {
-            throw $th;
+        } catch (AwsException $e) {
+            $statusCode = $e->getStatusCode();
+            return response()->json(['error' => 'Please supply valid human image'], $statusCode);
         }
     }
 }
